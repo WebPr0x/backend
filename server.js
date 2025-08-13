@@ -14,10 +14,14 @@ io.on("connection", (socket) => {
   console.log("User connected: " + socket.id);
 
   socket.on("chat message", (msg) => {
-    io.emit("chat message", {
-      id: socket.id.slice(0, 5),
-      message: msg
-    });
+    // Ensure msg is an object with username + message
+    if (msg && msg.username && msg.message) {
+      io.emit("chat message", {
+        id: socket.id.slice(0, 5),   // short unique identifier
+        username: msg.username,      // keep username from client
+        message: msg.message         // keep message content
+      });
+    }
   });
 
   socket.on("disconnect", () => {
